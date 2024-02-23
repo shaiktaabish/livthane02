@@ -1,0 +1,791 @@
+backend:
+  name: git-gateway
+  accept_roles:
+    - admin
+    - editor
+  branch: master
+media_folder: theme/assets/images
+public_folder: /assets/images
+collections:
+  - name: pages
+    label: Pages
+    identifier_field: title
+    extension: md
+    create: false
+    delete: false
+    slug: '{{slug}}'
+    editor:
+      preview: false
+    folder: cms/pages
+    fields:
+      - label: Title
+        name: title
+        widget: string
+      - label: Publish Date
+        name: date
+        widget: datetime
+      - label: Layout
+        widget: hidden
+        name: layout
+        default: '{{slug}}.html'
+      - &ref_0
+        label: Seo
+        name: seo
+        widget: object
+        collapsed: true
+        fields:
+          - label: Title
+            name: title
+            widget: string
+            required: false
+          - label: Description
+            name: description
+            widget: string
+            required: false
+          - label: No index
+            name: noindex
+            widget: boolean
+            default: false
+            required: false
+          - label: Open Graph Title
+            name: og:title
+            widget: string
+            required: false
+          - label: Open Graph Image
+            name: og:image
+            widget: image
+            required: false
+            media_library:
+              config:
+                multiple: false
+          - label: Twitter Title
+            name: twitter:title
+            widget: string
+            default: summary
+            required: false
+          - label: Twitter Card
+            name: twitter:card
+            widget: string
+            default: summary
+            required: false
+          - label: Twitter Site
+            name: twitter:site
+            widget: string
+            required: false
+          - label: Twitter Creator
+            name: twitter:creator
+            widget: string
+            required: false
+          - label: Twitter Image
+            name: twitter:image
+            widget: image
+            required: false
+            media_library:
+              config:
+                multiple: false
+          - label: Additional HTML tags
+            name: additional_tags
+            widget: text
+            required: false
+  - name: dishes_category
+    label: Dishes Categories
+    folder: cms/dishes-category
+    create: true
+    identifier_field: name
+    extension: md
+    slug: '{{slug}}'
+    fields:
+      - hint: ''
+        name: title
+        label: Name
+        widget: string
+        required: true
+      - hint: ''
+        name: created-on
+        label: Created On
+        widget: datetime
+        required: false
+      - hint: ''
+        name: updated-on
+        label: Updated On
+        widget: datetime
+        required: false
+      - hint: ''
+        name: published-on
+        label: Published On
+        widget: datetime
+        required: false
+      - label: Tags
+        widget: hidden
+        name: tags
+        default: dishes-category
+      - label: Layout
+        widget: hidden
+        name: layout
+        default: '[dishes-category].html'
+      - label: Publish Date
+        name: date
+        widget: datetime
+      - *ref_0
+  - name: dishes
+    label: Dishes
+    folder: cms/dishes
+    create: true
+    identifier_field: name
+    extension: md
+    slug: '{{slug}}'
+    fields:
+      - hint: ''
+        name: title
+        label: Name
+        widget: string
+        required: true
+      - hint: ''
+        name: created-on
+        label: Created On
+        widget: datetime
+        required: false
+      - hint: ''
+        name: updated-on
+        label: Updated On
+        widget: datetime
+        required: false
+      - hint: ''
+        name: published-on
+        label: Published On
+        widget: datetime
+        required: false
+      - hint: ''
+        name: f_food-image
+        label: Food image
+        widget: object
+        required: false
+        fields:
+          - hint: ''
+            name: url
+            label: Image
+            widget: image
+            required: false
+            allow_multiple: false
+          - hint: Image Alt
+            name: alt
+            label: alt
+            widget: string
+            required: false
+      - hint: ''
+        name: f_food-description
+        label: Food Description
+        widget: text
+        required: false
+      - hint: ''
+        name: f_star
+        label: Star
+        widget: object
+        required: false
+        fields:
+          - hint: ''
+            name: url
+            label: Image
+            widget: image
+            required: false
+            allow_multiple: false
+          - hint: Image Alt
+            name: alt
+            label: alt
+            widget: string
+            required: false
+      - hint: ''
+        name: f_category
+        label: Category
+        widget: relation
+        required: false
+        collection: dishes_category
+        value_field: cms/dishes-category/{{slug}}.md
+        search_fields:
+          - slug
+          - name
+        display_fields:
+          - title
+        multiple: false
+      - label: Tags
+        widget: hidden
+        name: tags
+        default: dishes
+      - label: Layout
+        widget: hidden
+        name: layout
+        default: '[dishes].html'
+      - label: Publish Date
+        name: date
+        widget: datetime
+      - *ref_0
+  - label: Theme Settings
+    name: settings
+    identifier_field: title
+    extension: json
+    create: false
+    delete: false
+    slug: '{{slug}}'
+    editor:
+      preview: false
+    files:
+      - label: General
+        name: site
+        file: cms/_data/settings/site.json
+        fields:
+          - label: Title
+            name: title
+            widget: hidden
+            default: General
+          - hint: Full domain url (needed for a correct sitemap file)
+            name: domain
+            label: Domain
+            widget: string
+            required: false
+          - name: favicon
+            label: Favicon
+            widget: image
+            allow_multiple: false
+            required: false
+          - name: apple_touch_icon
+            label: Apple Touch Icon
+            widget: image
+            allow_multiple: false
+            required: false
+          - name: header_additional_content
+            label: Additional Content Header
+            hint: Content here will be placed before </head> tag
+            widget: text
+            required: false
+          - name: footer_additional_content
+            label: Additional Content Footer
+            hint: Content here will be placed before </body> tag
+            widget: text
+            required: false
+          - name: images_optimization
+            label: Images Optimization
+            widget: object
+            collapsed: false
+            fields:
+              - label: Image Formats
+                name: formats
+                widget: select
+                multiple: true
+                options:
+                  - label: Avif
+                    value: avif
+                  - label: Webp
+                    value: webp
+              - label: Image Dimensions
+                name: dimensions
+                widget: select
+                multiple: true
+                options:
+                  - label: '500'
+                    value: 500
+                  - label: '800'
+                    value: 800
+                  - label: '1080'
+                    value: 1080
+                  - label: '1600'
+                    value: 1600
+                  - label: '2000'
+                    value: 2000
+                  - label: '2600'
+                    value: 2600
+      - label: Colors
+        name: colors
+        file: cms/_data/colors.json
+        fields:
+          - label: Title
+            name: title
+            widget: hidden
+            default: Colors
+      - label: Texts
+        name: texts
+        file: cms/_data/texts.json
+        fields:
+          - label: Title
+            name: title
+            widget: hidden
+            default: Texts
+          - hint: >-
+              Original text: 20% OFF on order above ₹6000. Offer last till Feb
+              2023, key: -2cfa7926
+            label: Text
+            name: '-2cfa7926'
+            widget: string
+          - hint: 'Original text: Home, key: 2268ff'
+            label: Text
+            name: 2268ff
+            widget: string
+          - hint: 'Original text: Instagram, key: 792b2792'
+            label: Text
+            name: 792b2792
+            widget: string
+          - hint: 'Original text: Menu, key: 24897f'
+            label: Text
+            name: 24897f
+            widget: string
+          - hint: 'Original text: Faq''s, key: 40832a2'
+            label: Text
+            name: 40832a2
+            widget: string
+          - hint: 'Original text: Locate on Map, key: -2ba63817'
+            label: Text
+            name: '-2ba63817'
+            widget: string
+          - hint: 'Original text: Make a Reservation, key: 3990bdb'
+            label: Text
+            name: 3990bdb
+            widget: string
+          - hint: >-
+              Original text: LivThane- Where culinary excellence meets skyline
+              dining! , key: 77bb9617
+            label: Text
+            name: 77bb9617
+            widget: string
+          - hint: >-
+              Original text: Savour extraordinary flavours while taking in
+              spectacular views at LivThane, Thane's foremost rooftop dining
+              destination. An unforgettable dining experience awaits you!, key:
+              -3ad32de7
+            label: Text
+            name: '-3ad32de7'
+            widget: text
+          - hint: 'Original text: Watch Video, key: 3db38daa'
+            label: Text
+            name: 3db38daa
+            widget: string
+          - hint: >-
+              Original text: LivThane's ambience seamlessly blends comfort &
+              elegance! , key: 5c3b65c0
+            label: Text
+            name: 5c3b65c0
+            widget: string
+          - hint: >-
+              Original text: We invite you to unwind and embrace life's vibrant
+              moments, whether you're seeking a meal with a view or a
+              sophisticated dining experience. Elevate your evenings with a
+              perfect blend of elegance, entertainment, and elevated dining.
+              Join us for a refined experience!, key: 5b4e263e
+            label: Text
+            name: 5b4e263e
+            widget: text
+          - hint: 'Original text: Open & enclosed dining, key: 2eed45b4'
+            label: Text
+            name: 2eed45b4
+            widget: string
+          - hint: 'Original text: Super-premium lounge, key: 2b38b3d5'
+            label: Text
+            name: 2b38b3d5
+            widget: string
+          - hint: 'Original text: Immersive interiors, key: -12165682'
+            label: Text
+            name: '-12165682'
+            widget: string
+          - hint: 'Original text: Our Popular Dishes, key: 356466a3'
+            label: Text
+            name: 356466a3
+            widget: string
+          - hint: 'Original text: No items found., key: 3d503d2b'
+            label: Text
+            name: 3d503d2b
+            widget: string
+          - hint: >-
+              Original text: Enjoy the finest drinks from our bar!, key:
+              72cd2e74
+            label: Text
+            name: 72cd2e74
+            widget: string
+          - hint: >-
+              Original text: Harmonising quality ingredients and expert mixology
+              to present you with an exceptional drinking experience. Cheers to
+              a journey of exquisite flavours in every sip! , key: -6b34e102
+            label: Text
+            name: '-6b34e102'
+            widget: text
+          - hint: 'Original text: Unlimited Options, key: -30821de1'
+            label: Text
+            name: '-30821de1'
+            widget: string
+          - hint: 'Original text: Non-Alcoholic Drinks, key: 28a8f0b3'
+            label: Text
+            name: 28a8f0b3
+            widget: string
+          - hint: 'Original text: Craft Brews, key: -7b058e8f'
+            label: Text
+            name: '-7b058e8f'
+            widget: string
+          - hint: 'Original text: Exquisite Cocktails, key: 39f474a8'
+            label: Text
+            name: 39f474a8
+            widget: string
+          - hint: 'Original text: Signature Mixes, key: 46829662'
+            label: Text
+            name: '46829662'
+            widget: string
+          - hint: 'Original text: Follow us on Instagram, key: 526ce284'
+            label: Text
+            name: 526ce284
+            widget: string
+          - hint: 'Original text: Sit back, enjoy the view & relax!, key: -713d4ebb'
+            label: Text
+            name: '-713d4ebb'
+            widget: string
+          - hint: >-
+              Original text: Ease into our inviting atmosphere, where panoramic
+              views set the backdrop for the perfect evening. Indulge in a
+              culinary journey with thoughtfully crafted dishes and drinks. At
+              LivThane, enjoy the perfect fusion of serene ambiance, delightful
+              flavors, and a laid-back escape., key: 10ea6516
+            label: Text
+            name: 10ea6516
+            widget: text
+          - hint: 'Original text: Frequently Asked , key: 16e8e12d'
+            label: Text
+            name: 16e8e12d
+            widget: string
+          - hint: 'Original text: Questions, key: d37612d'
+            label: Text
+            name: d37612d
+            widget: string
+          - hint: >-
+              Original text: How can I make a reservation at LivThane?, key:
+              -226e6deb
+            label: Text
+            name: '-226e6deb'
+            widget: string
+          - hint: >-
+              Original text: To make a reservation at LivThane, the
+              intergalactic resort on the moon, you'll need to contact their
+              extraterrestrial reservation department. Simply send a message via
+              telepathy, making sure to include your preferred lunar suite.,
+              key: 1d070308
+            label: Text
+            name: 1d070308
+            widget: text
+          - hint: 'Original text: What are LivThane''s operating hours?, key: -111ef90'
+            label: Text
+            name: '-111ef90'
+            widget: string
+          - hint: >-
+              Original text: LivThane operates on a unique time system
+              synchronized with lunar cycles, ensuring guests experience maximum
+              celestial enjoyment., key: -1ab4cf9f
+            label: Text
+            name: '-1ab4cf9f'
+            widget: text
+          - hint: >-
+              Original text: Where is your restaurant located, and is there
+              parking available?, key: 38e56614
+            label: Text
+            name: '38e56614'
+            widget: string
+          - hint: >-
+              Original text: Cannibalize. Root-and-branch review can we parallel
+              path player-coach quick-win we've bootstrapped the model critical
+              mass, so product market fit., key: -19525edf
+            label: Text
+            name: '-19525edf'
+            widget: text
+          - hint: >-
+              Original text: Do you accommodate dietary restrictions or offer
+              vegetarian/vegan options?, key: 21e13872
+            label: Text
+            name: '21e13872'
+            widget: string
+          - hint: >-
+              Original text: Absolutely! LivThane is dedicated to accommodating
+              a wide range of dietary preferences and restrictions, including
+              vegetarian and vegan options. The culinary experts at LivThane's
+              celestial kitchen have mastered the art of crafting exquisite
+              dishes for all types of cosmic travelers, key: -28bc1c6b
+            label: Text
+            name: '-28bc1c6b'
+            widget: text
+          - hint: >-
+              Original text: Got questions? Let us know & we'll get back! , key:
+              -3630bbd
+            label: Text
+            name: '-3630bbd'
+            widget: string
+          - hint: >-
+              Original text: Fill out this form to connect with our team. For
+              more immediate assistance, feel free to reach out through the
+              contact details provided below. We welcome calls, emails, or even
+              visits to LivThane (if you want to surprise our staff)., key:
+              a9da632
+            label: Text
+            name: a9da632
+            widget: text
+          - hint: 'Original text: info@livthane.com, key: 795ebf50'
+            label: Text
+            name: 795ebf50
+            widget: string
+          - hint: 'Original text: +91 9152443737, key: 18be65fa'
+            label: Text
+            name: 18be65fa
+            widget: string
+          - hint: >-
+              Original text: 14th Floor, Fenkin 9, Wagle Estate, Thane West,
+              Thane 400604, key: 16272bf0
+            label: Text
+            name: 16272bf0
+            widget: string
+          - hint: 'Original text: Full Name, key: ff41d7c'
+            label: Text
+            name: ff41d7c
+            widget: string
+          - hint: 'Original text: Email, key: 3ff5b7c'
+            label: Text
+            name: 3ff5b7c
+            widget: string
+          - hint: 'Original text: Phone Number, key: -55f81185'
+            label: Text
+            name: '-55f81185'
+            widget: string
+          - hint: 'Original text: Number Of People, key: 75512501'
+            label: Text
+            name: '75512501'
+            widget: string
+          - hint: 'Original text: Select Date & Time, key: -4b455dcb'
+            label: Text
+            name: '-4b455dcb'
+            widget: string
+          - hint: 'Original text: Your Message, key: -7fc0aae6'
+            label: Text
+            name: '-7fc0aae6'
+            widget: string
+          - hint: >-
+              Original text: Thank you! We will get back in touch with you
+              within 48 hours., key: f777110
+            label: Text
+            name: f777110
+            widget: string
+          - hint: >-
+              Original text: Oops! Something went wrong while submitting the
+              form., key: -7c112e99
+            label: Text
+            name: '-7c112e99'
+            widget: string
+          - hint: 'Original text: Resources, key: 13ede05'
+            label: Text
+            name: 13ede05
+            widget: string
+          - hint: 'Original text: Menu Page, key: 18e954b0'
+            label: Text
+            name: 18e954b0
+            widget: string
+          - hint: 'Original text: Aboutus, key: 1c031acb'
+            label: Text
+            name: 1c031acb
+            widget: string
+          - hint: 'Original text: Blogs, key: 3d4d4f1'
+            label: Text
+            name: 3d4d4f1
+            widget: string
+          - hint: 'Original text: WhatsApp CoPilot , key: -3a6bc51e'
+            label: Text
+            name: '-3a6bc51e'
+            widget: string
+          - hint: 'Original text: Coming Soon, key: ccc773a'
+            label: Text
+            name: ccc773a
+            widget: string
+          - hint: 'Original text: Project Mgmt CoPilot , key: -33eec874'
+            label: Text
+            name: '-33eec874'
+            widget: string
+          - hint: 'Original text: Infra CoPilot , key: 9cd1084'
+            label: Text
+            name: 9cd1084
+            widget: string
+          - hint: 'Original text: Legal, key: 45e7299'
+            label: Text
+            name: '45e7299'
+            widget: string
+          - hint: 'Original text: Privacy Policy, key: -3fbde6f6'
+            label: Text
+            name: '-3fbde6f6'
+            widget: string
+          - hint: 'Original text: Terms & Conditions, key: 4f912d2b'
+            label: Text
+            name: 4f912d2b
+            widget: string
+          - hint: 'Original text: Caution Notice, key: -40bc7693'
+            label: Text
+            name: '-40bc7693'
+            widget: string
+          - hint: 'Original text: Terms of Use, key: 38622077'
+            label: Text
+            name: '38622077'
+            widget: string
+          - hint: 'Original text: Refund Policy, key: -234a8d26'
+            label: Text
+            name: '-234a8d26'
+            widget: string
+          - hint: 'Original text: Contact us, key: 7f274abe'
+            label: Text
+            name: 7f274abe
+            widget: string
+          - hint: 'Original text: Follow Us, key: -5ae80293'
+            label: Text
+            name: '-5ae80293'
+            widget: string
+          - hint: >-
+              Original text: © 2024 LIV a unit of Seven Foods Hospitality | ALL
+              RIGHTS RESERVED | Build by UxieAgency, key: 31bd3b5f
+            label: Text
+            name: 31bd3b5f
+            widget: string
+          - hint: 'Original text: Get 10% OFF on your next order, key: -7cbc713e'
+            label: Text
+            name: '-7cbc713e'
+            widget: string
+          - hint: >-
+              Original text: Subscribe to our newsletter and receive a 10% OFF
+              coupon to use on your next order., key: -3379ad77
+            label: Text
+            name: '-3379ad77'
+            widget: string
+          - hint: >-
+              Original text: Please check your email for your 10% OFF coupon,
+              key: -7e19fdfc
+            label: Text
+            name: '-7e19fdfc'
+            widget: string
+          - hint: 'Original text: Contact Us, key: 7f2746de'
+            label: Text
+            name: 7f2746de
+            widget: string
+          - hint: 'Original text: Book Your Reservations, key: 2dc3b79d'
+            label: Text
+            name: 2dc3b79d
+            widget: string
+          - hint: >-
+              Original text: Secure your spot for an unforgettable dining
+              experience—reserve your table now. Elevate your moments with us,
+              we ensure a seamless and delightful culinary journey. , key:
+              -cb3896e
+            label: Text
+            name: '-cb3896e'
+            widget: text
+          - hint: 'Original text: Popular Dishes, key: 5b132f'
+            label: Text
+            name: 5b132f
+            widget: string
+          - hint: 'Original text: Our Menu, key: 25ddf3'
+            label: Text
+            name: 25ddf3
+            widget: string
+          - hint: 'Original text: Explore Our Culinary Creations, key: 4687bcfe'
+            label: Text
+            name: 4687bcfe
+            widget: string
+          - hint: >-
+              Original text: Our menu is a celebration of diverse culinary
+              traditions, blending fresh, high-quality ingredients to create a
+              memorable dining experience. From vibrant appetizers to decadent
+              desserts, each offering reflects our passion for culinary
+              excellence. Come explore with us! , key: -73763646
+            label: Text
+            name: '-73763646'
+            widget: text
+      - label: Links
+        name: links
+        file: cms/_data/links.json
+        fields:
+          - label: Title
+            name: title
+            widget: hidden
+            default: Links
+          - hint: 'Original link: /, key: 2f'
+            label: Link
+            name: 2f
+            widget: string
+          - hint: 'Original link: /#instagram, key: -423fafa2'
+            label: Link
+            name: '-423fafa2'
+            widget: string
+          - hint: 'Original link: /dishes/, key: 75f89a58'
+            label: Link
+            name: 75f89a58
+            widget: string
+          - hint: 'Original link: /#faq, key: 2a7c4c2'
+            label: Link
+            name: 2a7c4c2
+            widget: string
+          - hint: 'Original link: /#map, key: 2a7df08'
+            label: Link
+            name: 2a7df08
+            widget: string
+          - hint: 'Original link: /reservations/, key: -45b46ce7'
+            label: Link
+            name: '-45b46ce7'
+            widget: string
+          - hint: 'Original link: #, key: 23'
+            label: Link
+            name: '23'
+            widget: string
+          - hint: 'Original link: mailto:info@livthane.com, key: b778448'
+            label: Link
+            name: b778448
+            widget: string
+          - hint: 'Original link: tel:+919152443737, key: -219a261f'
+            label: Link
+            name: '-219a261f'
+            widget: string
+          - hint: >-
+              Original link:
+              https://www.google.com/maps/place/Fenkin9/@19.1875531,72.9538661,15z/data=!4m6!3m5!1s0x3be7b94a35a1826b:0x238d801433eaeae4!8m2!3d19.1875531!4d72.9538661!16s%2Fg%2F11r3v_1c75?entry=ttu,
+              key: -60801c95
+            label: Link
+            name: '-60801c95'
+            widget: string
+          - hint: >-
+              Original link: https://www.copilot.live/terms-of-service, key:
+              -24733e20
+            label: Link
+            name: '-24733e20'
+            widget: string
+          - hint: >-
+              Original link: https://www.copilot.live/refund-policy, key:
+              1c74dec
+            label: Link
+            name: 1c74dec
+            widget: string
+      - label: Images
+        name: images
+        file: cms/_data/images.json
+        fields:
+          - label: Title
+            name: title
+            widget: hidden
+            default: Images
+          - label: Image
+            name: '32179415'
+            widget: object
+            fields:
+              - name: url
+                label: Image Url
+                widget: image
+                allow_multiple: false
+                required: false
+              - name: alt
+                label: Image Alt
+                widget: string
+                required: false
+          - label: Image
+            name: 5c2f0f5c
+            widget: object
+            fields:
+              - name: url
+                label: Image Url
+                widget: image
+                allow_multiple: false
+                required: false
+              - name: alt
+                label: Image Alt
+                widget: string
+                required: false
